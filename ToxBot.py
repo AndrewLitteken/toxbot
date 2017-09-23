@@ -32,7 +32,8 @@ class ToxBot:
             while len(self.bad) > 10:
                 del self.bad[10]
             self.numMessages += 1
-            if len(self.recent) >= 3 and not self.inQueue:
+            if len(self.recent) >= 10 and not self.inQueue:
+                print("\n\n\n\n\n\nWE ARE AT 10 BOYS\n\n\n\n\n\n\n")
                 personalityQueue.put(self)
                 self.inQueue = True
 
