@@ -5,6 +5,5 @@ from WebInterfaces.JeffyWebInterface import JeffyWebInterface
 test = JeffyWebInterface(8080,None)
 test.startRESTinterface()
 
-while True:
-	pass
+input()
 test.stopRESTinterface()

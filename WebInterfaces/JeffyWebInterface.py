@@ -10,10 +10,10 @@ import traceback
 class JeffyWebInterface(WebInterface):
 	def __init__(self,port,rtkd):
 		self.port = port
-		self.host = WebHost(self.port,staticdir="WebInterfaces/static",staticindex="index.html")
+		self.host = WebHost(self.port,staticdir="WebInterfaces/static",staticindex="jeffy.html")
 		self.rtkd = rtkd
 		
-		self.connect('/test/',							'TEST',			'GET')
+		self.connect('/test/',	'TEST',	'GET')
 	
 	def TEST(self):
 		"""TEST"""
