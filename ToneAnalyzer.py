@@ -102,11 +102,11 @@ class ToneAnalyzer:
 
 myT = ToneAnalyzer("30414254-d997-450b-a250-6bee15973725", "cgIxQsZpDFGt", '2016-05-19',
                    './data/text', './data/scores', False)
-print(myT.get_score("you are australian"))
-print(myT.get_score("italian"))
-print(myT.get_score("you are a useless piece of trash, a lame excuse for a human being"))
-print(myT.get_score("great play!"))
-print(myT.get_score("have my children"))
+print(myT.get_score("I love you"))
+print(myT.get_score("You are the best streamer I've ever seen and are super good at the game"))
+print(myT.get_score("I wish I was as good as you"))
+print(myT.get_score("die in a hole"))
+print(myT.get_score("suck my cock"))
 
 
 # Plot data points and hand rate some
