@@ -69,6 +69,6 @@ class IRC:
         self.pong(buff, debug)
         return buff
 
-q = queue.Queue()
-jeffy = IRCbot("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g", q)
-jeffy.listen()
+#q = queue.Queue()
+#jeffy = IRCbot("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g", q)
+#jeffy.listen()
