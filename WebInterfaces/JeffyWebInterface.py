@@ -16,12 +16,26 @@ class JeffyWebInterface(WebInterface):
 		self.connect('/all_users/',			'ALL_USERS',	'GET')
 		self.connect('best_users/:cnt',		'BEST_USERS',	'GET')
 		self.connect('worst_users/:cnt',	'WORST_USERS',	'GET')
+		self.connect('user_info/:uname',	'USER_INFO',	'GET')
 	
+	def getAllUsersDict(self):
+		return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",-1],["",-1]],"toxicity":-1},"uname":{"username":"uname","worst_messages":[["",-1],["",-1]],"toxicity":-0.9}}
+
+	def getAllUsersList(self):
+		user_dict = self.getAllUsersDict()
+		user_list = []
+		for key in user_list:
+			user_list.append(user_list[key])
+		return user_list
+
+	def getSortedUsers(self):
+		return sorted(self.getAllUsersList(), key=lambda k: k["toxicity"])
+
 	def ALL_USERS(self):
 		"""return stats on all users"""
 		output = {'result':'success'}
 		try:
-			pass
+			output["users"] = self.getSortedUsers()
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)
@@ -32,7 +46,7 @@ class JeffyWebInterface(WebInterface):
 		"""return stats on the best users"""
 		output = {'result':'success'}
 		try:
-			pass
+			output["users"] = self.getSortedUsers()
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)
@@ -43,13 +57,24 @@ class JeffyWebInterface(WebInterface):
 		"""return stats on the worst users"""
 		output = {'result':'success'}
 		try:
-			pass
+			output["users"] = self.getSortedUsers()
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)
 			output['traceback'] = traceback.format_exc()
 		return json.dumps(output)
 	
+	def USER_INFO(self,uname):
+		"""return stats on a specific user"""
+		output = {'result':'success'}
+		try:
+			output["stats"] = self.getAllUsersDict()[uname]
+		except Exception as ex:
+			output['result'] = 'error'
+			output['message'] = str(ex)
+			output['traceback'] = traceback.format_exc()
+		return json.dumps(output)
+
 	def startWebHost(self):
 		self.host.start_service()
 	
