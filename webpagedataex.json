@@ -1,17 +1,18 @@
-[
-	{
+{
+	"ZahmbieND":{
 		"username":"ZahmbieND",
 		"worst_messages":[
 			["",-1],
 			["",-1]
 		],
 		"toxicity":-1
-	},{
-		"username":"ZahmbieND",
+	},
+	"uname":{
+		"username":"uname",
 		"worst_messages":[
 			["",-1],
 			["",-1]
 		],
 		"toxicity":-1
 	}
-]
+}

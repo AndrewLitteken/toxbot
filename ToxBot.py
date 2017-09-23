@@ -88,5 +88,7 @@ class ToxBot:
 		
 		toneAnalyzer1 = threading.Thread(target=analyze_tone, args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g"))
 		jeffyThread = threading.Thread(target=jeffy_listen, args=())
-
+		toneAnalyzer1.daemon = True
+		jeffyThread.daemon = True
+		jeffyThread.start()
 		toneAnalyzer1.start()
