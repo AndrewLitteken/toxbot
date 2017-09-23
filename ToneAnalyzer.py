@@ -3,7 +3,7 @@ from sklearn.neural_network import MLPClassifier
 
 
 class ToneAnalyzer:
-    def __init__(self, username=None, password=None, version=None):
+    def __init__(self, username=None, password=None, version=None, text=None, score=None, first_init=False):
         """
 
         :param username: Watson BlueMix Api username key
@@ -12,9 +12,9 @@ class ToneAnalyzer:
 
         """
         self.tone_analyzer = self.__init_analyzer(username, password, version)
-        # self._first_init()
-        self._thresh_ratio = 0.3
-        self._general_ratio = 0.7
+        self._training_files = (text, score)
+        if not first_init:
+            self._first_init()
         self.clf = self.train_model()
 
     @staticmethod
@@ -25,8 +25,8 @@ class ToneAnalyzer:
             version=version)
 
     def _first_init(self):
-        with open('text.txt') as f:
-            with open('save_values.txt', 'w') as of:
+        with open(self._training_files[0]) as f:
+            with open('_save_values.txt', 'w') as of:
                 for line in f:
                     data = self.tone_analyzer.tone(text=line.strip())
                     score_dict = {}
@@ -39,12 +39,12 @@ class ToneAnalyzer:
 
     def train_model(self):
         x_matrix = []
-        with open('save_values.txt') as f:
+        with open('_save_values.txt') as f:
             for line in f:
                 x_matrix.append([float(x) for x in line.rstrip().split()])
 
         y_matrix = []
-        with open('scores') as f:
+        with open(self._training_files[1]) as f:
             for line in f:
                 y_matrix.append(line.rstrip())
         print(x_matrix)
@@ -91,24 +91,22 @@ class ToneAnalyzer:
 
         # print(general_sum, thresh_sum)
         # return general_sum + thresh_sum
-        print("Predict: ", self.clf.predict([temp]))
-        print("Probabilities: ", self.clf.predict_proba([temp])[0])
+        # print("Predict: ", self.clf.predict([temp]))
+        # print("Probabilities: ", self.clf.predict_proba([temp])[0])
 
-        probs = self.clf.predict_proba([temp])[0]
+        prob = self.clf.predict_proba([temp])[0]
+        return -1 * prob[0] + prob[2]
 
-        net_score = -1 * probs[0] + probs[2]
-        print("Sum Score: ", net_score)
+        # print("Sum Score: ", net_score)
         # print(sum(self.clf.predict_proba([temp])[0]))
 
-
-
-
-myT = ToneAnalyzer("a54c1a30-92fe-4c1f-b34a-02936047e396", "8WTlVVDHFHCt", '2016-05-19')
-myT.get_score("you are australian")
-myT.get_score("italian")
-myT.get_score("you are a useless piece of trash, a lame excuse for a human being")
-myT.get_score("great play!")
-myT.get_score("have my children")
+myT = ToneAnalyzer("30414254-d997-450b-a250-6bee15973725", "cgIxQsZpDFGt", '2016-05-19',
+                   './data/text', './data/scores', False)
+# myT.get_score("you are australian")
+# myT.get_score("italian")
+# myT.get_score("you are a useless piece of trash, a lame excuse for a human being")
+# myT.get_score("great play!")
+# myT.get_score("have my children")
 
 
 # Plot data points and hand rate some
