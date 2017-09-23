@@ -9,6 +9,7 @@ class ToxBot:
 		self.profiles = {}
 		self.whitelist = {}
 		self.threshold = .6
+		self.toxicity = 0
 
 	class Profile:
 		def __init__(self, usr, message):
@@ -66,6 +67,17 @@ class ToxBot:
 				profile = personalityQueue.get()
 				profile.update_personaliy()
 			time.sleep(2)
+	
+	def jeffy_listen(self, usr, auth, irc, channel):
+		jeffy = IRCbot(usr, auth, irc, channel, self.messages)
+		jeffy.listen()
+	
+	def get_profiles(self):
+		profDict = {}
+		for prof in self.profiles:
+			profInfo = {"username": prof.username, "worst_messages": prof.bad, "toxicity": prof.toxicity}
+			profDict[prof.username] = profInfo
+		return profDict
 
 	def run(self):
 		toneAnalyzer1 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19')
@@ -74,5 +86,7 @@ class ToxBot:
 		# toneAnalyzer2 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19');
 		# thread.start_new_thread(analyze_tone, (analyzer2, messages));
 		
-		toneAnalyzer1 = threading.Thread(target=analyze_tone, args=())
-		toneAnalyzer1.start()	
+		toneAnalyzer1 = threading.Thread(target=analyze_tone, args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g"))
+		jeffyThread = threading.Thread(target=jeffy_listen, args=())
+
+		toneAnalyzer1.start()
