@@ -47,8 +47,6 @@ class ToneAnalyzer:
         with open(self._training_files[1]) as f:
             for line in f:
                 y_matrix.append(line.rstrip())
-        print(x_matrix)
-        print(y_matrix)
         t_clf = MLPClassifier(solver='lbfgs', alpha=1e-5, random_state=1)
         t_clf.fit(x_matrix, y_matrix)
 
@@ -91,8 +89,8 @@ class ToneAnalyzer:
 
         # print(general_sum, thresh_sum)
         # return general_sum + thresh_sum
-        print("Predict: ", self.clf.predict([temp]))
-        print("Probabilities: ", self.clf.predict_proba([temp])[0])
+        # print("Predict: ", self.clf.predict([temp]))
+        # print("Probabilities: ", self.clf.predict_proba([temp])[0])
 
         prob = self.clf.predict_proba([temp])[0]
         return -1 * prob[0] + prob[2]
