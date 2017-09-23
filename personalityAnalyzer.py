@@ -75,9 +75,12 @@ class PersonalityAnalyzer:
 	def analyze_personality(self, messages_info):
 		messages_to_analyze={"contentItems": [] }
 		score_total=0
-		for message in messages_info:
-			messages_to_analyze["contentItems"].append(message[0])
-			#score_total+=message[1]
+		words = 0
+		while words<100:
+			for message in messages_info:
+				messages_to_analyze["contentItems"].append(message[0])
+				words += len(message[0])
+				#score_total+=message[1]
 		score_avg = score_total/len(messages_to_analyze)
 		new_profile=self.create_profile(messages_to_analyze)
 		new_scores=self.create_scores(new_profile)
