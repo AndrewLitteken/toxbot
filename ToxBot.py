@@ -1,4 +1,5 @@
 import queue, heapq, threading
+from ircbot import IRCbot
 from ToneAnalyzer import ToneAnalyzer
 from PersonalityAnalyzer import PersonalityAnalyzer
 
@@ -19,7 +20,7 @@ class ToxBot:
 			heappush(self.bad, (message[1], message))
 			self.recent = [message]
 			self.inQueue = False
-			self.personality = None
+			self.toxicity = None
 
 		def add_message(message, personalityQueue):
 			self.recent.add(message)
@@ -31,16 +32,16 @@ class ToxBot:
 				personalityQueue.put(self)
 				self.inQueue = True
 		
-		def update_personality(self): #, personalityAnalyzer):
+		def update_personality(self, personalityAnalyzer):
 			numNewMessages = len(self.recent)
-			personality = PersonalityAnalyzer.get_personality(recent)
+			newTox = personalityAnalyzer.analyze_personality()
 			self.recent.clear()
 			self.inQueue = False
-			if self.personality is None:
-				self.personality = personality
+			if self.toxicity is None:
+				self.toxicity = newTox
 			else:
 				scale = numNewMessages/self.numMessages
-				personality = personalityAnalyzer.scale_personalities(personality, self.personality, scale, 1-scale)
+				self.toxicity = self.toxicity*scale + newTox*(1-scale)
 
 	def analyze_tone(self, analyzer, messages, threshold, profiles, whitelist):
 		while True:
@@ -49,7 +50,7 @@ class ToxBot:
 				score = analyzer.get_score(message)
 				if message[0] in profiles:
 					profileMessage = (message[1], score)
-					profiles[message[0]].addMessage(profileMessage)
+					profiles[message[0]].add_message(profileMessage)
 				else:
 					if score < -1*threshold :
 						if message[0] in whitelist:
@@ -61,11 +62,11 @@ class ToxBot:
 							profiles[message[0]] = Profile(message[0], ProfileMessage)
 			time.sleep(2)
 
-	def analyze_personality(self, presonalityAnalyzer, personalityQueue):
+	def analyze_personality(self):
 		while True:
-			while not personalityQueue.empty():
-				profile = personalityQueue.get()
-				profile.update_personaliy()
+			while not self.personalityQueue.empty():
+				profile = self.personalityQueue.get()
+				profile.update_personality()
 			time.sleep(2)
 	
 	def jeffy_listen(self, usr, auth, irc, channel):
@@ -80,15 +81,24 @@ class ToxBot:
 		return profDict
 
 	def run(self):
-		toneAnalyzer1 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19')
+		toneAnalyzer1 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19', "./data/text", "./data/scores", False)
 		# personalityAnalyzer1 = PersonalityAnalyzer() # What do I need to pass?
 
 		# toneAnalyzer2 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19');
 		# thread.start_new_thread(analyze_tone, (analyzer2, messages));
 		
-		toneAnalyzer1 = threading.Thread(target=analyze_tone, args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g"))
-		jeffyThread = threading.Thread(target=jeffy_listen, args=())
+		toneAnalyzer1 = threading.Thread(target=analyze_tone, args=())
+		jeffyThread = threading.Thread(target=jeffy_listen, args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g"))
+		personalityThread = threading.thread(target=analyze_personality, args=())
+		
 		toneAnalyzer1.daemon = True
 		jeffyThread.daemon = True
+		personalityThread.daemon = True
+		
 		jeffyThread.start()
 		toneAnalyzer1.start()
+		personalityThread.start()
+
+def main():
+	toxBot = ToxBot()
+	toxBot.run()
