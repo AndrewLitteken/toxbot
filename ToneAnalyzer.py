@@ -13,7 +13,7 @@ class ToneAnalyzer:
         """
         self.tone_analyzer = self.__init_analyzer(username, password, version)
         self._training_files = (text, score)
-        if not first_init:
+        if first_init:
             self._first_init()
         self.clf = self.train_model()
 
@@ -91,8 +91,8 @@ class ToneAnalyzer:
 
         # print(general_sum, thresh_sum)
         # return general_sum + thresh_sum
-        # print("Predict: ", self.clf.predict([temp]))
-        # print("Probabilities: ", self.clf.predict_proba([temp])[0])
+        print("Predict: ", self.clf.predict([temp]))
+        print("Probabilities: ", self.clf.predict_proba([temp])[0])
 
         prob = self.clf.predict_proba([temp])[0]
         return -1 * prob[0] + prob[2]
@@ -102,11 +102,11 @@ class ToneAnalyzer:
 
 myT = ToneAnalyzer("30414254-d997-450b-a250-6bee15973725", "cgIxQsZpDFGt", '2016-05-19',
                    './data/text', './data/scores', False)
-# myT.get_score("you are australian")
-# myT.get_score("italian")
-# myT.get_score("you are a useless piece of trash, a lame excuse for a human being")
-# myT.get_score("great play!")
-# myT.get_score("have my children")
+print(myT.get_score("you are australian"))
+print(myT.get_score("italian"))
+print(myT.get_score("you are a useless piece of trash, a lame excuse for a human being"))
+print(myT.get_score("great play!"))
+print(myT.get_score("have my children"))
 
 
 # Plot data points and hand rate some
