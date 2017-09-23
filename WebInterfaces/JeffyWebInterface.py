@@ -5,13 +5,15 @@ import random
 import threading
 import time
 
+import random
+
 import traceback
 
 class JeffyWebInterface(WebInterface):
-	def __init__(self,port,rtkd):
+	def __init__(self,port,tox_bot):
 		self.port = port
 		self.host = WebHost(self.port,staticdir="WebInterfaces/static",staticindex="jeffy.html")
-		self.rtkd = rtkd
+		self.tox_bot = tox_bot
 		
 		self.connect('/all_users/',			'ALL_USERS',	'GET')
 		self.connect('/best_users/:cnt',	'BEST_USERS',	'GET')
@@ -19,7 +21,14 @@ class JeffyWebInterface(WebInterface):
 		self.connect('/user_info/:uname',	'USER_INFO',	'GET')
 	
 	def getAllUsersDict(self):
-		return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",1],["",1]],"toxicity":1},"uname":{"username":"uname","worst_messages":[["",1],["",1]],"toxicity":0.9}}
+		# return self.tox_bot.get_profiles()
+		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",1],["",1]],"toxicity":1},"uname":{"username":"uname","worst_messages":[["",1],["",1]],"toxicity":0.9}}
+		return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["Hi",1],["Bye",0.999]],"toxicity":1},
+			"uname":self.getRandomFakeData("uname"),
+			"john effrey":self.getRandomFakeData("john effrey"),
+			"chiggin":self.getRandomFakeData("chiggin"),
+			"jbaker":self.getRandomFakeData("jbaker"),
+		}
 
 	def getNeutralFakeData(self,username):
 		return {
@@ -27,6 +36,16 @@ class JeffyWebInterface(WebInterface):
 			"worst_messages":[],
 			"toxicity":0
 		}
+
+	def getRandomFakeData(self,username):
+		fake_data = self.getNeutralFakeData(username)
+		fake_data["toxicity"] = random.random()*2-1
+		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
+		return fake_data
 
 	def getAllUsersList(self):
 		user_dict = self.getAllUsersDict()

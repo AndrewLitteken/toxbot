@@ -1,9 +1,14 @@
 #! /usr/bin/env python3
 
 from WebInterfaces.JeffyWebInterface import JeffyWebInterface
+# import ToxBot
 
-test = JeffyWebInterface(8080,None)
-test.startRESTinterface()
+tox_bot = None
+# tox_bot = ToxBot()
+# tox_bot.run()
+
+intrfce = JeffyWebInterface(8080,tox_bot)
+intrfce.startRESTinterface()
 
 input()
-test.stopRESTinterface()
+intrfce.stopRESTinterface()
