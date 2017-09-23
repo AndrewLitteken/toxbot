@@ -13,10 +13,34 @@ class JeffyWebInterface(WebInterface):
 		self.host = WebHost(self.port,staticdir="WebInterfaces/static",staticindex="jeffy.html")
 		self.rtkd = rtkd
 		
-		self.connect('/test/',	'TEST',	'GET')
+		self.connect('/all_users/',			'ALL_USERS',	'GET')
+		self.connect('best_users/:cnt',		'BEST_USERS',	'GET')
+		self.connect('worst_users/:cnt',	'WORST_USERS',	'GET')
 	
-	def TEST(self):
-		"""TEST"""
+	def ALL_USERS(self):
+		"""return stats on all users"""
+		output = {'result':'success'}
+		try:
+			pass
+		except Exception as ex:
+			output['result'] = 'error'
+			output['message'] = str(ex)
+			output['traceback'] = traceback.format_exc()
+		return json.dumps(output)
+	
+	def BEST_USERS(self,cnt):
+		"""return stats on the best users"""
+		output = {'result':'success'}
+		try:
+			pass
+		except Exception as ex:
+			output['result'] = 'error'
+			output['message'] = str(ex)
+			output['traceback'] = traceback.format_exc()
+		return json.dumps(output)
+	
+	def WORST_USERS(self,cnt):
+		"""return stats on the worst users"""
 		output = {'result':'success'}
 		try:
 			pass
