@@ -14,18 +14,25 @@ class JeffyWebInterface(WebInterface):
 		self.rtkd = rtkd
 		
 		self.connect('/all_users/',			'ALL_USERS',	'GET')
-		self.connect('best_users/:cnt',		'BEST_USERS',	'GET')
-		self.connect('worst_users/:cnt',	'WORST_USERS',	'GET')
-		self.connect('user_info/:uname',	'USER_INFO',	'GET')
+		self.connect('/best_users/:cnt',	'BEST_USERS',	'GET')
+		self.connect('/worst_users/:cnt',	'WORST_USERS',	'GET')
+		self.connect('/user_info/:uname',	'USER_INFO',	'GET')
 	
 	def getAllUsersDict(self):
-		return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",-1],["",-1]],"toxicity":-1},"uname":{"username":"uname","worst_messages":[["",-1],["",-1]],"toxicity":-0.9}}
+		return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",1],["",1]],"toxicity":1},"uname":{"username":"uname","worst_messages":[["",1],["",1]],"toxicity":0.9}}
+
+	def getNeutralFakeData(self,username):
+		return {
+			"username":username,
+			"worst_messages":[],
+			"toxicity":0
+		}
 
 	def getAllUsersList(self):
 		user_dict = self.getAllUsersDict()
 		user_list = []
-		for key in user_list:
-			user_list.append(user_list[key])
+		for key in user_dict:
+			user_list.append(user_dict[key])
 		return user_list
 
 	def getSortedUsers(self):
@@ -46,7 +53,9 @@ class JeffyWebInterface(WebInterface):
 		"""return stats on the best users"""
 		output = {'result':'success'}
 		try:
-			output["users"] = self.getSortedUsers()
+			users = self.getSortedUsers()
+			users.reverse()
+			output["users"] = users[:int(cnt)]
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)
@@ -57,7 +66,7 @@ class JeffyWebInterface(WebInterface):
 		"""return stats on the worst users"""
 		output = {'result':'success'}
 		try:
-			output["users"] = self.getSortedUsers()
+			output["users"] = self.getSortedUsers()[:int(cnt)]
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)
@@ -68,7 +77,11 @@ class JeffyWebInterface(WebInterface):
 		"""return stats on a specific user"""
 		output = {'result':'success'}
 		try:
-			output["stats"] = self.getAllUsersDict()[uname]
+			users = self.getAllUsersDict()
+			if uname in users:
+				output["stats"] = users[uname]
+			else:
+				output["stats"] = self.getNeutralFakeData(uname)
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)
