@@ -39,7 +39,7 @@ class ToxBot:
         def update_personality(self, personalityAnalyzer):
             num_new_messages = len(self.recent)
             new_tox = personalityAnalyzer.analyze_personality(self.recent)
-            print("~~~~~~~~~~~~~~Toxiscity level:" + str(new_tox))
+            print("~~~~~~~~~~~~~~Toxicity level:" + str(new_tox))
             self.recent.clear()
             self.inQueue = False
             if self.toxicity is None:
@@ -78,8 +78,15 @@ class ToxBot:
 
     def get_profiles(self):
         profDict = {}
-        for prof in self.profiles:
-            profInfo = {"username": prof.username, "worst_messages": prof.bad, "toxicity": prof.toxicity}
+        for key in self.profiles:
+            prof = self.profiles[key]
+            bad = []
+            for item in prof.bad:
+                bad.append(list(item[1]))
+            toxicity = prof.toxicity
+            if toxicity is None:
+                toxicity = 0
+            profInfo = {"username": prof.username, "worst_messages": bad, "toxicity": toxicity}
             profDict[prof.username] = profInfo
         return profDict
 
