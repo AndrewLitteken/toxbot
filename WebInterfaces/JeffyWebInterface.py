@@ -76,7 +76,7 @@ class JeffyWebInterface(WebInterface):
 		return sorted(self.getAllUsersList(), key=lambda k: k["toxicity"])
 
 	def getSortedUserStats(self):
-		return sorted(self.getUserStatsList(), key=lambda k: k["toxicity"])
+		return sorted(self.getUserStatsList(), key=lambda k: k["size"])
 
 	def USER_STATS(self):
 		"""return stats on all users"""
