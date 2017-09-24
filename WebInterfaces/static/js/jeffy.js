@@ -84,6 +84,7 @@ function create_user_info_obj(data, is_panel) {
             name_elem.setAttribute("class", "panel-heading");
         } else {
             name_elem = document.createElement("h4");
+            name_elem.style.textDecoration = "underline";
             name_elem.setAttribute("class", "list-group-item-heading");
         }
         name_elem.appendChild(document.createTextNode(data["username"]));
