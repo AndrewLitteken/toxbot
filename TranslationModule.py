@@ -16,7 +16,6 @@ class TranslationModule:
 
         except Exception:
             print("Cannot connect to translation service. Aborting.")
-            exit()
 
     def _get_model(self, message):
         """
@@ -30,6 +29,7 @@ class TranslationModule:
             return None
 
     def translate_message(self, message):
+        print(message)
         """
 
         :param message: message to be translated;
