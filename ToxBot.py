@@ -4,11 +4,13 @@ import queue, heapq, threading
 from ircbot import IRCbot
 from ToneAnalyzer import ToneAnalyzer
 from PersonalityAnalyzer import PersonalityAnalyzer
+from TranslationModule import TranslationModule
 import time
 
 
 class ToxBot:
     def __init__(self):
+        self.toBeTranslated = queue.Queue()
         self.messages = queue.Queue()
         self.personalityQueue = queue.Queue()
         self.profiles = {}
@@ -103,7 +105,7 @@ class ToxBot:
         :param channel: the name of the channel on twitch
         :return: None
         """
-        jeffy = IRCbot(usr, auth, irc, channel, self.messages)
+        jeffy = IRCbot(usr, auth, irc, channel, self.toBeTranslated)
         jeffy.listen()
 
     def get_profiles(self):
@@ -132,7 +134,7 @@ class ToxBot:
         toneAnalyzer1 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19',
                                      "./data/all_marked_data.txt", "./data/all_marked_data_scores.txt", False)
         personalityAnalyzer1 = PersonalityAnalyzer('023391c6-0462-4720-8db4-42d03a32a89a', '6arBBasLMdQQ', '2016-9-20')
-
+        languageAnalyzer1 = TranslationModule('024d97af-9a06-4990-af90-c5e04421138d', 'ezSrQw1cAwwX')
         # toneAnalyzer2 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19');
         # thread.start_new_thread(analyze_tone, (analyzer2, messages));
 
@@ -140,16 +142,23 @@ class ToxBot:
         jeffyThread = threading.Thread(target=self.jeffy_listen,
                                        args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g"))
         personalityThread = threading.Thread(target=self.analyze_personality, args=(personalityAnalyzer1,))
+        languageThread = threading.Thread(target=self.analyze_language, args=(languageAnalyzer1,))
 
         toneAnalyzerThread.daemon = True
         jeffyThread.daemon = True
         personalityThread.daemon = True
+        languageThread.daemon = True
 
         jeffyThread.start()
         toneAnalyzerThread.start()
         personalityThread.start()
+        languageThread.start()
 
     def get_user_stats(self):
+        """
+        Web interface that returns stats on a user's toxicity and total number of messages
+        :return: dictionary of stats on a user's toxicity and total number of messages
+        """
         profDict = {}
         for key in self.profiles:
             prof = self.profiles[key]
@@ -159,16 +168,33 @@ class ToxBot:
             profInfo = {"name": prof.username, "toxicity": toxicity, "size": prof.numMessages}
             profDict[prof.username] = profInfo
         return profDict
+
+    def analyze_language(self, analyzer):
+        """
+        takes in a message, determines the language that it is in, and translates it if necessary
+        :param analyzer: instantiation of the language analyzer class, used to analyze the language and translate to
+                            english if possible
+        :return: None
+        """
+        while True:
+            while not self.toBeTranslated.empty():
+                message = self.toBeTranslated.get()
+                try:
+                    message = analyzer.translate_message(message[1])
+                    self.messages.put(message)
+                except Exception:
+                    self.messages.put(message)
+            time.sleep(1)
+
 def main():
     """
-    creats and runs an instance of ToxBot
+    creates and runs an instance of ToxBot
     :return: None
     """
     tox_bot = ToxBot()
     tox_bot.run()
     while True:
         pass
-
 
 if __name__ == '__main__':
     main()
