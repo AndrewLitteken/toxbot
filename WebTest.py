@@ -4,7 +4,7 @@ from WebInterfaces.JeffyWebInterface import JeffyWebInterface
 import ToxBot
 
 # tox_bot = None
-tox_bot = ToxBot()
+tox_bot = ToxBot.ToxBot()
 tox_bot.run()
 
 intrfce = JeffyWebInterface(8080,tox_bot)

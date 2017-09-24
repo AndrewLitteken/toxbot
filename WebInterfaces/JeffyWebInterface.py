@@ -21,6 +21,8 @@ class JeffyWebInterface(WebInterface):
 		self.connect('/user_info/:uname',	'USER_INFO',	'GET')
 	
 	def getAllUsersDict(self):
+		print("______________________________________________________________________")
+		print(self.tox_bot.get_profiles())
 		return self.tox_bot.get_profiles()
 		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",1],["",1]],"toxicity":1},"uname":{"username":"uname","worst_messages":[["",1],["",1]],"toxicity":0.9}}
 		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["Hi",1],["Bye",0.999]],"toxicity":1},
