@@ -157,8 +157,8 @@ def main():
     creats and runs an instance of ToxBot
     :return: None
     """
-    toxBot = ToxBot()
-    toxBot.run()
+    tox_bot = ToxBot()
+    tox_bot.run()
     while True:
         pass
 
