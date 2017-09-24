@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type='text/javascript' src="cordova.js"></script>
+	<meta charset="utf-8">
+	<meta http—equiv="X—UA—Compatib1e" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head
+		content must come *after* these tags -->
+	<title>Jeffy Control Interface</title>
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="js/bootstrap.min.css"> ​​
+	<!-- HTML5 shim and Respond. js for IE8 support of HTML5 elements and media queries   -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file://  -->
+	<!--[if lt IE 9]> 
+		<script src="https://oss.maxcdn.com/htm15shiv/3.7.3/htm15shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script> 
+		<![endif]-->
+
+	<style>
+		g circle:hover {
+			stroke: blue;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="main_body" class="container">
+		<div id="search_users_block">
+			<h1>Search Users</h1>
+			<div class="form-group">
+				<label class="control-label">Username</label>
+				<div class="input-group">
+					<input id="single_user_select_uname" class="form-control" type="text"></input>
+					<span class="input-group-btn">
+						<button id="single_user_select_submit" class="btn btn-default" type="button">Submit</button>
+					</span>
+				</div>
+			</div>
+			<div id="single_user"></div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6" id="user_graph_block">
+				<div id="chart"></div>
+			</div>
+			<div class="col-lg-6" id="user_list_block">
+				<h1>User List</h1>
+				<form class="form-horizontal">
+					Quantity
+					<input id="user_list_quantity" type="text"></input>
+					<fieldset>
+						<div class="form-group" id="user_list_selection">
+							<div>
+								<div class="radio">
+									<label>
+										<input name="optionsRadios" id="user_list_selection_worst" type="radio" checked="" value="worst_users"> Most Toxic
+									</label>
+								</div>
+								<div class="radio">
+									<label>
+										<input name="optionsRadios" id="user_list_selection_best" type="radio" value="best_users"> Least Toxic
+									</label>
+								</div>
+								<div class="radio">
+									<label>
+										<input name="optionsRadios" id="user_list_selection_all" type="radio" value="all_users"> All Users
+									</label>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+				<div id="user_list"></div>
+			</div>
+		</div>
+	</div>
+	<div id="scripts" style="display:none;">
+		<script type='text/javascript' src="js/d3.v3.min.js"></script>
+		<script type='text/javascript' src="js/d3.v4.min.js"></script>
+		<script type='text/javascript' src="js/WebRequest.js"></script>
+		<script type='text/javascript' src="js/queued_request.js"></script>
+		<script type='text/javascript' src="js/t.js"></script>
+		<script type='text/javascript' src="js/u.js"></script>
+		<script type='text/javascript' src="js/jeffy.js"></script>
+		<!-- Bootstrap core JavaScript	================================================== -->​
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type='text/javascript' src="js/jquery.min.js"></script>
+		<script type='text/javascript' src="js/jquery.min.js"></script>
+        <script type='text/javascript' src="js/bootstrap.min.js"></script>
+	</div>
+</body>
+
+</html>
