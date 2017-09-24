@@ -29,7 +29,8 @@ function num2color(num) {
 function create_badge(num) {
 	var badge = document.createElement("span");
 	badge.setAttribute("class", "badge");
-	badge.appendChild(document.createTextNode(float2goodstring(num)));
+	badge.setAttribute("style", "margin-left: 15px; width: 60px");
+	badge.appendChild(document.createTextNode((100*num).toFixed(2)));
 	badge.style.backgroundColor = num2color(num);
 	badge.style.color = "black";
 	return badge;
@@ -46,7 +47,7 @@ function perform_action(action, uname) {
 function create_button(title, action, user) {
 	var button = document.createElement("button");
 	button.setAttribute("onclick","perform_action(\""+action+"\",\""+user+"\");");
-    button.setAttribute("class", "btn btn-info");
+    button.setAttribute("class", "btn btn-info pull-right btn-sm");
 	button.appendChild(document.createTextNode(title));
 	button.style.color = "black";
 	return button;
@@ -71,7 +72,6 @@ function create_comment_list(comments) {
 
 function create_user_info_obj(data, is_panel) {
 	var ret = document.createElement("div");
-<<<<<<< HEAD
     if(data["username"] != "_") {
         if (is_panel) {
             ret.setAttribute("class", "panel panel-default");
@@ -88,6 +88,9 @@ function create_user_info_obj(data, is_panel) {
         }
         name_elem.appendChild(document.createTextNode(data["username"]));
         name_elem.appendChild(create_badge(data["toxicity"]));
+        name_elem.appendChild(create_button("Mod", "mod", data["username"]));
+        name_elem.appendChild(create_button("Timeout", "timeout", data["username"]));
+        name_elem.appendChild(create_button("Ban", "ban", data["username"]));
         ret.appendChild(name_elem);
         var sub_elem = document.createElement("div");
         if (is_panel) {
