@@ -16,6 +16,9 @@ class JeffyWebInterface(WebInterface):
 		self.tox_bot = tox_bot
 		
 		self.connect('/all_users/',			'ALL_USERS',	'GET')
+		self.connect('/do/mod/:uname',    'ACTION_MOD',	'GET')
+		self.connect('/do/ban/:uname',    'ACTION_BAN',	'GET')
+		self.connect('/do/timeout/:uname',    'ACTION_TIMEOUT',	'GET')
 		self.connect('/best_users/:cnt',	'BEST_USERS',	'GET')
 		self.connect('/worst_users/:cnt',	'WORST_USERS',	'GET')
 		self.connect('/user_info/:uname',	'USER_INFO',	'GET')
@@ -101,6 +104,42 @@ class JeffyWebInterface(WebInterface):
 				output["stats"] = users[uname.lower()]
 			else:
 				output["stats"] = self.getNeutralFakeData(uname.lower())
+		except Exception as ex:
+			output['result'] = 'error'
+			output['message'] = str(ex)
+			output['traceback'] = traceback.format_exc()
+		return json.dumps(output)
+
+	def ACTION_TIMEOUT(self,uname):
+		"""sends a specific user to timeout"""
+		output = {'result':'success'}
+		try:
+			uname = uname.lower()
+			self.tox_bot.jeffy.do_to_user("timeout", uname)
+		except Exception as ex:
+			output['result'] = 'error'
+			output['message'] = str(ex)
+			output['traceback'] = traceback.format_exc()
+		return json.dumps(output)
+
+	def ACTION_BAN(self,uname):
+		"""bans uname"""
+		output = {'result':'success'}
+		try:
+			uname = uname.lower()
+			self.tox_bot.jeffy.do_to_user("ban", uname)
+		except Exception as ex:
+			output['result'] = 'error'
+			output['message'] = str(ex)
+			output['traceback'] = traceback.format_exc()
+		return json.dumps(output)
+
+	def ACTION_MOD(self,uname):
+		"""makes a user mod"""
+		output = {'result':'success'}
+		try:
+			uname = uname.lower()
+			self.tox_bot.jeffy.do_to_user("mod", uname)
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)

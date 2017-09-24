@@ -103,8 +103,8 @@ class ToxBot:
         :param channel: the name of the channel on twitch
         :return: None
         """
-        jeffy = IRCbot(usr, auth, irc, channel, self.messages)
-        jeffy.listen()
+        self.jeffy = IRCbot(usr, auth, irc, channel, self.messages)
+        self.jeffy.listen()
 
     def get_profiles(self):
         """
@@ -138,7 +138,7 @@ class ToxBot:
 
         toneAnalyzerThread = threading.Thread(target=self.analyze_tone, args=(toneAnalyzer1,))
         jeffyThread = threading.Thread(target=self.jeffy_listen,
-                                       args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g"))
+                                       args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#johnathonnow"))
         personalityThread = threading.Thread(target=self.analyze_personality, args=(personalityAnalyzer1,))
 
         toneAnalyzerThread.daemon = True

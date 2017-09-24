@@ -8,7 +8,7 @@ class IRCbot(object):
         self.irc = IRC()
         self.user = user
         self.passw = passw
-        self.channel = None
+        self.channel = channel
         self.irc.connect(server, channel, user, passw)
         self.q = q
 
@@ -42,6 +42,15 @@ class IRCbot(object):
                     self.on_chat(who, message)
                 n_buf = buff
             buf = n_buf
+
+    def do_to_user(self, action, user):
+        """
+        Performs /action on user using the twitch chat commands
+        :param action: what action to do
+        :param user: what user to do something to
+        :return: None
+        """
+        self.irc.send(self.channel, '/{} {}'.format(action, user))
 
     def send(self, message):
         """
