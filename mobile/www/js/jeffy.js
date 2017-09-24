@@ -29,8 +29,8 @@ function num2color(num) {
 function create_badge(num) {
 	var badge = document.createElement("span");
 	badge.setAttribute("class", "badge");
-	badge.setAttribute("style", "margin-left: 15px; width: 60px");
-	badge.appendChild(document.createTextNode((100*num).toFixed(2)));
+	badge.setAttribute("style", "margin-left: 15px; width: 36px");
+	badge.appendChild(document.createTextNode((100*num).toFixed(0)));
 	badge.style.backgroundColor = num2color(num);
 	badge.style.color = "black";
 	return badge;
