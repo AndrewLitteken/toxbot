@@ -51,7 +51,12 @@ class ToxBot:
             :return: None
             """
             num_new_messages = len(self.recent)
-            new_tox = personalityAnalyzer.analyze_personality(self.recent)
+            total = 0
+            for message in self.recent:
+                total += message[1]
+            tone_tox = total/num_new_messages
+            personality_tox = personalityAnalyzer.analyze_personality(self.recent)
+            new_tox = (tone_tox+personality_tox)/2
             self.recent.clear()
             self.inQueue = False
             if self.toxicity is None:  # if there have been no prior analyses, toxicity is based on this analysis only
