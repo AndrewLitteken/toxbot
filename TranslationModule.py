@@ -40,6 +40,9 @@ class TranslationModule:
             return message
         else:
             try:
-                return self._language_translator.translate(message, source=model, target='en')
+                print("\t\t\t OTHER LANGUAGE COMMENT \t\t\t", message)
+                new_message = self._language_translator.translate(message, source=model, target='en')
+                print("\t\t\t" + new_message + "\t\t\t")
+                return new_message
             except Exception:
                 return message
