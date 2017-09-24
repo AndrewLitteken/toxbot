@@ -96,7 +96,7 @@ function create_user_info_list(data_list) {
 	return list_elem;
 }
 
-function get_user_info(uname) {
+function get_user_info(uname,finished_callback) {
 	QueuedWebRequest("GET", "/user_info/" + uname, "", false, function (text) {
 		var data = JSON.parse(text);
 		if (data["result"] == "success") {
@@ -106,10 +106,11 @@ function get_user_info(uname) {
 		} else {
 			console.log("ERROR: " + data["message"] + " \nTraceback: " + data["traceback"]);
 		}
+		finished_callback(data["result"] == "success");
 	});
 }
 
-function get_user_list() {
+function get_user_list(finished_callback) {
 	var keys = ["user_list_selection_all", "user_list_selection_worst", "user_list_selection_best"];
 	var user_value = "";
 	for (var i = 0; i < keys.length; i++) {
@@ -133,19 +134,23 @@ function get_user_list() {
 		} else {
 			console.log("ERROR: " + data["message"] + " \nTraceback: " + data["traceback"]);
 		}
+		finished_callback(data["result"] == "success");
 	});
 }
-get_user_list();
 
 var current_user_search = "_";
 
-function update_user_info() {
-	get_user_info(current_user_search);
+function update_user_info(finished_callback) {
+	get_user_info(current_user_search,finished_callback);
 }
 
 function get_user_info_submitted() {
 	current_user_search = document.getElementById("single_user_select_uname").value;
-	update_user_info();
+	update_user_info(function(){});
+}
+
+function get_user_list_submitted() {
+	get_user_list(function(){});
 }
 
 function fill_in_username(uname) {
@@ -155,13 +160,50 @@ function fill_in_username(uname) {
 
 document.getElementById("single_user_select_submit").addEventListener("click", get_user_info_submitted);
 document.getElementById("single_user_select_uname").addEventListener("submit", get_user_info_submitted);
-document.getElementById("user_list_selection").addEventListener("change", get_user_list);
-document.getElementById("user_list_quantity").addEventListener("change", get_user_list);
+document.getElementById("user_list_selection").addEventListener("change", get_user_list_submitted);
+document.getElementById("user_list_quantity").addEventListener("change", get_user_list_submitted);
 
-var last_bit = 0;
-function autoRefresh() {
-	get_user_list();
-	update_user_info();
-	get_user_stats();
+function get_user_list_continuous(timeout) {
+	get_user_list(function(finished){
+		var timetowait = timeout
+		if(!finished) {
+			timetowait = 100;
+		}
+		window.setTimeout(function() {
+			get_user_list_continuous(timeout);
+		},timetowait);
+	});
 }
-window.setInterval(autoRefresh, 1000);
+
+function update_user_info_continuous(timeout) {
+	update_user_info(function(finished){
+		var timetowait = timeout
+		if(!finished) {
+			timetowait = 100;
+		}
+		window.setTimeout(function() {
+			update_user_info_continuous(timeout);
+		},timetowait);
+	});
+}
+
+function get_user_stats_continuous(timeout) {
+	get_user_stats(function(finished){
+		var timetowait = timeout
+		if(!finished) {
+			timetowait = 100;
+		}
+		window.setTimeout(function() {
+			get_user_stats_continuous(timeout);
+		},timetowait);
+	});
+}
+
+
+function autoRefresh() {
+	get_user_list_continuous(1000);
+	update_user_info_continuous(3000);
+	get_user_stats_continuous(100);
+}
+
+autoRefresh();

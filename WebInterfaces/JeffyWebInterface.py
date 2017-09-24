@@ -23,13 +23,6 @@ class JeffyWebInterface(WebInterface):
 	
 	def getAllUsersDict(self):
 		return self.tox_bot.get_profiles()
-		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",1],["",1]],"toxicity":1},"uname":{"username":"uname","worst_messages":[["",1],["",1]],"toxicity":0.9}}
-		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["Hi",1],["Bye",0.999]],"toxicity":1},
-		# 	"uname":self.getRandomFakeData("uname"),
-		# 	"john effrey":self.getRandomFakeData("john effrey"),
-		# 	"chiggin":self.getRandomFakeData("chiggin"),
-		# 	"jbaker":self.getRandomFakeData("jbaker"),
-		# }
 	
 	def getUserStatsDict(self):
 		return self.tox_bot.get_user_stats()
@@ -76,13 +69,16 @@ class JeffyWebInterface(WebInterface):
 		return sorted(self.getAllUsersList(), key=lambda k: k["toxicity"])
 
 	def getSortedUserStats(self):
-		return sorted(self.getUserStatsList(), key=lambda k: k["size"])
+		name_sort = sorted(self.getUserStatsList(), key=lambda k: k["name"])
+		rev = sorted(name_sort, key=lambda k: k["size"])
+		rev.reverse()
+		return rev
 
 	def USER_STATS(self):
 		"""return stats on all users"""
 		output = {'result':'success'}
 		try:
-			output["users"] = self.getUserStatsList()
+			output["users"] = self.getSortedUserStats()
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)

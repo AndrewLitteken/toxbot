@@ -21,13 +21,14 @@ function update_user_stats(classes) {
 // 	{ "name": "andrew6", "toxicity": .8, "size": 17 },
 // 	{ "name": "andrew7", "toxicity": 1, "size": 19 },
 // ];
-function get_user_stats() {
+function get_user_stats(finished_callback) {
 	QueuedWebRequest("GET", "/user_stats/", "",false, function (text) {
 		var data = JSON.parse(text);
 		if (data["result"] == "success") {
-			update_user_stats(data["users"]);
+			update_user_stats(data["users"].slice(1,60));
 		} else {
 			console.log("ERROR: " + data["message"] + " \nTraceback: " + data["traceback"]);
 		}
+		finished_callback(data["result"] == "success");
 	});
 }

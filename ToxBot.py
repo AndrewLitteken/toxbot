@@ -5,6 +5,7 @@ from ircbot import IRCbot
 from ToneAnalyzer import ToneAnalyzer
 from PersonalityAnalyzer import PersonalityAnalyzer
 from TranslationModule import TranslationModule
+from WebInterfaces.JeffyWebInterface import JeffyWebInterface
 import time
 import sys
 
@@ -26,7 +27,7 @@ class ToxBot:
             self.bad = []
             self.good = []
             heapq.heappush(self.bad, (message[1], message))
-            heapq.heappush(self.good, (-(message[1]), message))
+            heapq.heappush(self.good, (-1*(message[1]), message))
             self.recent = [message]
             self.inQueue = False
             self.toxicity = None
@@ -40,8 +41,11 @@ class ToxBot:
             """
             self.recent.append(message)
             heapq.heappush(self.bad, (message[1], message))
-            while len(self.bad) > 10:  # only keeps the worst 10 messages
-                del self.bad[10]
+            while len(self.bad) > 3:  # only keeps the worst 3 messages
+                del self.bad[3]
+            heapq.heappush(self.good, (-1*message[1], message))
+            while len(self.good) > 3:  # only keeps the best 3 messages
+                del self.good[3]
             self.numMessages += 1
             if len(self.recent) >= 3 and not self.inQueue:  # run a personality analysis every x messages
                 personalityQueue.put(self)
@@ -63,7 +67,7 @@ class ToxBot:
             self.recent.clear()
             self.inQueue = False
             if self.toxicity is None:  # if there have been no prior analyses, toxicity is based on this analysis only
-                self.toxicity = new_tox*100
+                self.toxicity = new_tox
             else:  # if there have been prior analyses, then add this to total analysis as an average
                 scale = num_new_messages / self.numMessages
                 self.toxicity = self.toxicity*scale + new_tox*(1-scale)
