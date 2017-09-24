@@ -132,7 +132,7 @@ class ToxBot:
         :return: None
         """
         toneAnalyzer1 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19',
-                                     "./data/text", "./data/scores", False)
+                                     "./data/all_marked_data.txt", "./data/all_marked_data_scores.txt", False)
         personalityAnalyzer1 = PersonalityAnalyzer('023391c6-0462-4720-8db4-42d03a32a89a', '6arBBasLMdQQ', '2016-9-20')
 
         # toneAnalyzer2 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19');
