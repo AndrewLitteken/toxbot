@@ -21,14 +21,14 @@ class JeffyWebInterface(WebInterface):
 		self.connect('/user_info/:uname',	'USER_INFO',	'GET')
 	
 	def getAllUsersDict(self):
-		# return self.tox_bot.get_profiles()
+		return self.tox_bot.get_profiles()
 		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",1],["",1]],"toxicity":1},"uname":{"username":"uname","worst_messages":[["",1],["",1]],"toxicity":0.9}}
-		return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["Hi",1],["Bye",0.999]],"toxicity":1},
-			"uname":self.getRandomFakeData("uname"),
-			"john effrey":self.getRandomFakeData("john effrey"),
-			"chiggin":self.getRandomFakeData("chiggin"),
-			"jbaker":self.getRandomFakeData("jbaker"),
-		}
+		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["Hi",1],["Bye",0.999]],"toxicity":1},
+		# 	"uname":self.getRandomFakeData("uname"),
+		# 	"john effrey":self.getRandomFakeData("john effrey"),
+		# 	"chiggin":self.getRandomFakeData("chiggin"),
+		# 	"jbaker":self.getRandomFakeData("jbaker"),
+		# }
 
 	def getNeutralFakeData(self,username):
 		return {
