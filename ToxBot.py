@@ -202,9 +202,12 @@ def main(channel):
     :return: None
     """
     tox_bot = ToxBot()
+    intrfce = JeffyWebInterface(80,tox_bot)
+    intrfce.startRESTinterface()
     tox_bot.run(channel)
-    while True:
-        pass
+    
+    input()
+    intrfce.stopRESTinterface()
 
 if __name__ == '__main__':
     main(sys.argv[1])
