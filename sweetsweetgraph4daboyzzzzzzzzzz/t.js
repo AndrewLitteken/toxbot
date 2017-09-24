@@ -152,12 +152,13 @@ function changebubble(root) {
         })
         .style("fill", function (d, i) {
             return color(d.toxicity);
-        });
+        })
 
-    node.transition().attr("class", "node")
+    node.transition().duration(300).attr("class", "node")
         .attr("transform", function (d) {
         return "translate(" + d.x + "," + d.y + ")";
-    });
+    }).select("text").duration(1000)
+      .style("font-size", function(d) { return Math.min(2 * d.r, (2 * d.r - 8) / d.className.length ) + "px"; })
 
     node.exit().remove();
 

@@ -33,7 +33,10 @@ var tosend = {"children": classes};
 <script>
 changebubble(tosend);
 function update() {
-    tosend.children.push({"name": "andrews", "toxicity": -1, "size": 29});
+    //tosend.children.push({"name": "andrews", "toxicity": -1, "size": 29});
+    tosend.children[0].toxicity = 1-Math.random()*2;
+    tosend.children[1].size += 2;
+    tosend.children[2].size += 4;
     changebubble(tosend);
 }
 setInterval("update()", 4000);
