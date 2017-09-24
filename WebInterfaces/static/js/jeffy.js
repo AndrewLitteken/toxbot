@@ -4,9 +4,21 @@ function float2goodstring(num) {
 }
 
 function num2color(num) {
-	var red = 255*((-1*num/2.0)+0.5);
-	var green = 255*((num/2.0) + 0.5);
-	var blue = 255*(0);
+	var red = 255*((-1*num)+1.0);
+	var green = 255*((num) + 1.0);
+	var blue = 255*(-1*Math.abs(num) + 1.0);
+	red = Math.abs(red);
+	green = Math.abs(green);
+	blue = Math.abs(blue);
+	if(red>255) {
+		red = 255;
+	}
+	if(green>255) {
+		green = 255;
+	}
+	if(blue>255) {
+		blue = 255;
+	}
 	var combined = Math.floor(red)*256*256+Math.floor(green)*256+Math.floor(blue);
 	var combined_str = (combined + 256*256*256).toString(16);
 	combined_str_short = combined_str.substr(combined_str.length-6,6);
@@ -90,7 +102,7 @@ function get_user_info(uname) {
 			console.log("ERROR: "+data["message"]+" \nTraceback: "+data["traceback"]);
 		}
 	},function(err) {
-		alert("ERROR: "+err);
+		console.log("ERROR: "+err);
 	});
 }
 
@@ -119,7 +131,7 @@ function get_user_list() {
 			console.log("ERROR: "+data["message"]+" \nTraceback: "+data["traceback"]);
 		}
 	},function(err) {
-		alert("ERROR: "+err);
+		console.log("ERROR: "+err);
 	});
 }
 get_user_list();
