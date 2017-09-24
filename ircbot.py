@@ -15,7 +15,7 @@ class IRCbot(object):
     def on_chat(self, who, msg, buf):
         if who != self.user:
             self.q.put((str(who), str(msg)))
-            # print("{}: {}".format(str(who), msg))
+            print("{}: {}".format(str(who), msg))
 
     def listen(self):
         buf = ""

@@ -136,10 +136,28 @@ function get_user_list() {
 }
 get_user_list();
 
+var current_user_search = "_";
+
+function update_user_info() {
+	get_user_info(current_user_search);
+}
+
 function get_user_info_submitted() {
-	get_user_info(document.getElementById("single_user_select_uname").value);
+	current_user_search = document.getElementById("single_user_select_uname").value;
+	update_user_info();
 }
 document.getElementById("single_user_select_submit").addEventListener("click",get_user_info_submitted);
 document.getElementById("single_user_select_uname").addEventListener("submit",get_user_info_submitted);
 document.getElementById("user_list_selection").addEventListener("change",get_user_list);
 document.getElementById("user_list_quantity").addEventListener("change",get_user_list);
+
+var last_bit = false;
+function autoRefresh() {
+	if(last_bit) {
+		get_user_list();
+	} else {
+		update_user_info();
+	}
+	last_bit = !last_bit;
+}
+window.setInterval(autoRefresh,500);
