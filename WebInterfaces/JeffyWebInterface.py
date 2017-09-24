@@ -15,6 +15,7 @@ class JeffyWebInterface(WebInterface):
 		self.host = WebHost(self.port,staticdir="WebInterfaces/static",staticindex="jeffy.html")
 		self.tox_bot = tox_bot
 		
+		self.connect('/user_stats/',		'USER_STATS',	'GET')
 		self.connect('/all_users/',			'ALL_USERS',	'GET')
 		self.connect('/best_users/:cnt',	'BEST_USERS',	'GET')
 		self.connect('/worst_users/:cnt',	'WORST_USERS',	'GET')
@@ -56,6 +57,17 @@ class JeffyWebInterface(WebInterface):
 
 	def getSortedUsers(self):
 		return sorted(self.getAllUsersList(), key=lambda k: k["toxicity"])
+
+	def USER_STATS(self):
+		"""return stats on all users"""
+		output = {'result':'success'}
+		try:
+			output["users"] = self.getSortedUsers()
+		except Exception as ex:
+			output['result'] = 'error'
+			output['message'] = str(ex)
+			output['traceback'] = traceback.format_exc()
+		return json.dumps(output)
 
 	def ALL_USERS(self):
 		"""return stats on all users"""
