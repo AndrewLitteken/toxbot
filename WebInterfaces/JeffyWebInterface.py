@@ -30,12 +30,17 @@ class JeffyWebInterface(WebInterface):
 		# 	"chiggin":self.getRandomFakeData("chiggin"),
 		# 	"jbaker":self.getRandomFakeData("jbaker"),
 		# }
+	
+	def getUserStatsDict(self):
+		return self.tox_bot.get_user_stats()
 
 	def getNeutralFakeData(self,username):
 		return {
 			"username":username,
 			"worst_messages":[],
-			"toxicity":0
+			"best_messages":[],
+			"toxicity":0,
+			"num_messages":0,
 		}
 
 	def getRandomFakeData(self,username):
@@ -46,6 +51,11 @@ class JeffyWebInterface(WebInterface):
 		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
 		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
 		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
 		return fake_data
 
 	def getAllUsersList(self):
@@ -54,15 +64,25 @@ class JeffyWebInterface(WebInterface):
 		for key in user_dict:
 			user_list.append(user_dict[key])
 		return user_list
+	
+	def getUserStatsList(self):
+		user_dict = self.getUserStatsDict()
+		user_list = []
+		for key in user_dict:
+			user_list.append(user_dict[key])
+		return user_list
 
 	def getSortedUsers(self):
 		return sorted(self.getAllUsersList(), key=lambda k: k["toxicity"])
+
+	def getSortedUserStats(self):
+		return sorted(self.getUserStatsList(), key=lambda k: k["toxicity"])
 
 	def USER_STATS(self):
 		"""return stats on all users"""
 		output = {'result':'success'}
 		try:
-			output["users"] = self.getSortedUsers()
+			output["users"] = self.getUserStatsList()
 		except Exception as ex:
 			output['result'] = 'error'
 			output['message'] = str(ex)

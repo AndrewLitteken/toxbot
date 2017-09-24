@@ -1,10 +1,5 @@
 function update_user_stats(classes) {
 	var tosend = { "children": classes };
-
-	//tosend.children.push({"name": "andrews", "toxicity": -1, "size": 29});
-	tosend.children[0].toxicity = 1 - Math.random() * 2;
-	tosend.children[1].size += 2;
-	tosend.children[2].size += 4;
 	changebubble(tosend);
 }
 
@@ -26,16 +21,13 @@ function update_user_stats(classes) {
 // 	{ "name": "andrew6", "toxicity": .8, "size": 17 },
 // 	{ "name": "andrew7", "toxicity": 1, "size": 19 },
 // ];
-function download_user_stats() {
-	WebRequest("GET", "/user_stats/", "", function (text) {
+function get_user_stats() {
+	QueuedWebRequest("GET", "/user_stats/", "",false, function (text) {
 		var data = JSON.parse(text);
 		if (data["result"] == "success") {
-			update(data["users"]);
+			update_user_stats(data["users"]);
 		} else {
 			console.log("ERROR: " + data["message"] + " \nTraceback: " + data["traceback"]);
 		}
-	}, function (err) {
-		console.log("ERROR: " + err);
 	});
 }
-setInterval("download_user_stats()", 4000);
