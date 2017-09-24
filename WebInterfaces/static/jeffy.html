@@ -16,6 +16,12 @@
 		<script src="https://oss.maxcdn.com/htm15shiv/3.7.3/htm15shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script> 
 		<![endif]-->
+
+	<style>
+		g circle:hover {
+			stroke: blue;
+		}
+	</style>
 </head>
 
 <body>
@@ -35,7 +41,7 @@
 		</div>
 		<div class="row">
 			<div class="col-lg-6" id="user_graph_block">
-				
+				<div id="chart"></div>
 			</div>
 			<div class="col-lg-6" id="user_list_block">
 				<h1>User List</h1>
@@ -69,16 +75,18 @@
 		</div>
 	</div>
 	<div id="scripts" style="display:none;">
+		<script src="https://d3js.org/d3.v3.min.js"></script>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="js/WebRequest.js"></script>
 		<script src="js/queued_request.js"></script>
+		<script src="js/t.js"></script>
+		<script src="js/u.js"></script>
 		<script src="js/jeffy.js"></script>
 		<!-- Bootstrap core JavaScript	================================================== -->​
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
-		<script src="https://d3js.org/d3.v3.min.js"></script>
-		<script src="https://d3js.org/d3.v4.min.js"></script>
 	</div>
 </body>
 

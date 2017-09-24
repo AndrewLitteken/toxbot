@@ -7,7 +7,7 @@ import ToxBot
 tox_bot = ToxBot.ToxBot()
 tox_bot.run()
 
-intrfce = JeffyWebInterface(8080,tox_bot)
+intrfce = JeffyWebInterface(80,tox_bot)
 intrfce.startRESTinterface()
 
 input()

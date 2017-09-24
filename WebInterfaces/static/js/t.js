@@ -1,6 +1,6 @@
 var format = d3.format(",d");
-var width = 960;
-var height = 960;
+var width = 600;
+var height = 1000;
 
 var color = d3.scaleLinear()
     .domain([-1, 0, 1])
@@ -13,8 +13,8 @@ var bubble = d3.layout.pack()
     .padding(10);
 
 var svg = d3.select("#chart").append("svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("viewBox", "0 0 "+width+" "+height)
+    .attr("preserveAspectRatio","xMinYMin meet")
     .attr("class", "bubble")
     .attr("font-family", "sans-serif")
     .attr("font-size", "16")
@@ -113,7 +113,7 @@ function changebubble(root) {
         .style("stroke-width", function() { return "5px"; })
         .attr("stroke", function() { return "black"; })
         .on("click", function(e) {
-            console.log(e);
+            fill_in_username(e.className);
          })
         /*.on("onmouseout", function() {
            d3.select(this)
