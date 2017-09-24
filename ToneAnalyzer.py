@@ -19,6 +19,13 @@ class ToneAnalyzer:
 
     @staticmethod
     def __init_analyzer(username: str, password: str, version: str):
+        """
+        Initialize the analyzer.
+        :param username: Watson BlueMIx Api username key
+        :param password: Watson BlueMix Api password token
+        :param version: version of the tone-analyzer used in this instance
+        :return: the analyzer to be used
+        """
         return ToneAnalyzerV3(
             username=username,
             password=password,
@@ -64,47 +71,25 @@ class ToneAnalyzer:
         for key in sorted(score_dict.keys()):
             temp.append(score_dict[key])
 
-        # general_sum = 0
-        # thresh_sum = 0
-
-        # for key in score_dict.keys():
-        #    if key == 'Openness' or key == 'Conscientiousness' or key == 'Agreeableness':
-        #         if score_dict[key] < 0.5:
-        #             general_sum -= 1 - score_dict[key]
-        #         else:
-        #             general_sum += score_dict[key]
-        #     elif key == 'Anger' or key == 'Disgust' or key == 'Fear':
-        #         if score_dict[key] > 0.5:
-        #             thresh_sum -= score_dict[key]
-        #         else:
-        #             thresh_sum += 1 - score_dict[key]
-        #     elif key == 'Joy':
-        #         if score_dict[key] > 0.5:
-        #             thresh_sum += score_dict[key]
-        #         else:
-        #             thresh_sum -= 1 - score_dict[key]
-
-        # general_sum *= self._general_ratio
-        # thresh_sum *= self._thresh_ratio
-
-        # print(general_sum, thresh_sum)
-        # return general_sum + thresh_sum
-        # print("Predict: ", self.clf.predict([temp]))
-        # print("Probabilities: ", self.clf.predict_proba([temp])[0])
-
         prob = self.clf.predict_proba([temp])[0]
+        # print(self.clf.predict_proba([temp])[0])
         return -1 * prob[0] + prob[2]
 
-        # print("Sum Score: ", net_score)
-        # print(sum(self.clf.predict_proba([temp])[0]))
 
 # myT = ToneAnalyzer("30414254-d997-450b-a250-6bee15973725", "cgIxQsZpDFGt", '2016-05-19',
-#                   './data/text', './data/scores', False)
-#print(myT.get_score("I love you"))
-#print(myT.get_score("You are the best streamer I've ever seen and are super good at the game"))
-#print(myT.get_score("I wish I was as good as you"))
-#print(myT.get_score("die in a hole"))
-#print(myT.get_score("suck my cock"))
+#                    './data/all_marked_data.txt', './data/all_marked_data_scores.txt', False)
+
+# print(myT.get_score("I love you"))
+# print(myT.get_score("You are the best streamer I've ever seen and are super good at the game"))
+# print(myT.get_score("I wish I was as good as you"))
+# print(myT.get_score("die in a hole"))
+# print(myT.get_score("suck my cock"))
+# print(myT.get_score("gg great play"))
+# rint(myT.get_score("long dick"))
+# print(myT.get_score("he said hid dick was huge when he was drunk streaming"))
+# print(myT.get_score("OMG YOU'RE SUCH A BEAST"))
+# print(myT.get_score("omg you're such a beast"))
+
 
 
 # Plot data points and hand rate some

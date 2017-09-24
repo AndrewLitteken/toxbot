@@ -1,23 +1,43 @@
 <!DOCTYPE html>
-<svg width="960" height="960" font-family="sans-serif" font-size="16" text-anchor="middle"></svg>
+<head>
+    <style>
+        g circle:hover {
+            stroke: blue;
+        }
+    </style>
+</head>
+<script src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 var classes=[
-{"user": "jeffrey", "toxicity": 0, "messages": 4},
-{"user": "huseman", "toxicity": -1, "messages": 2},
-{"user": "andrew", "toxicity": 1, "messages": 9},
-{"user": "andrew2", "toxicity": -.8, "messages": 9},
-{"user": "andrew3", "toxicity": -.6, "messages": 9},
-{"user": "andrew4", "toxicity": -.4, "messages": 9},
-{"user": "andrew5", "toxicity": -.2, "messages": 9},
-{"user": "andrew6", "toxicity": 0, "messages": 9},
-{"user": "andrew7", "toxicity": .2, "messages": 9},
-{"user": "andrew3", "toxicity": .4, "messages": 91},
-{"user": "andrew4", "toxicity": .5, "messages": 12},
-{"user": "andrew5", "toxicity": .7, "messages": 15},
-{"user": "andrew6", "toxicity": .8, "messages": 17},
-{"user": "andrew7", "toxicity": 1, "messages": 19},
+{"name": "jeffrey2", "toxicity": -1, "size": 4},
+{"name": "jeffrey", "toxicity": 0, "size": 4},
+{"name": "huseman", "toxicity": -1, "size": 2},
+{"name": "andrew", "toxicity": 1, "size": 9},
+{"name": "andrew2", "toxicity": -.8, "size": 9},
+{"name": "andrew3", "toxicity": -.6, "size": 9},
+{"name": "andrew4", "toxicity": -.4, "size": 9},
+{"name": "andrew5", "toxicity": -.2, "size": 9},
+{"name": "andrew6", "toxicity": 0, "size": 9},
+{"name": "andrew7", "toxicity": .2, "size": 9},
+{"name": "andrew3", "toxicity": .4, "size": 91},
+{"name": "andrew4", "toxicity": .5, "size": 12},
+{"name": "andrew5", "toxicity": .7, "size": 15},
+{"name": "andrew6", "toxicity": .8, "size": 17},
+{"name": "andrew7", "toxicity": 1, "size": 19},
 ];
+var tosend = {"children": classes};
 </script>
-<script src="./fancy.js"></script>
-<button onclick="classes.push({'user':'john', 'toxicity': 1, 'messages': 100}); updateData();">hi</button>
+<div id="chart"></div>
+<script src="./t.js"></script>
+<script>
+changebubble(tosend);
+function update() {
+    //tosend.children.push({"name": "andrews", "toxicity": -1, "size": 29});
+    tosend.children[0].toxicity = 1-Math.random()*2;
+    tosend.children[1].size += 2;
+    tosend.children[2].size += 4;
+    changebubble(tosend);
+}
+setInterval("update()", 4000);
+</script>
