@@ -13,7 +13,7 @@ class ToxBot:
         self.personalityQueue = queue.Queue()
         self.profiles = {}
         self.whitelist = {}
-        self.threshold = -.6
+        self.threshold = -.5
         self.toxicity = 0
 
     class Profile:
@@ -70,19 +70,17 @@ class ToxBot:
                 while not self.messages.empty():
                     message = self.messages.get()
                     score = analyzer.get_score(message[1])
+                    # if score < self.threshold:
+                    #     print("\t\t\t" + str(message), " toxicity: " + score)
                     if message[0] in self.profiles:  # if the profile exists, add the message to the profile
                         profile_message = (message[1], score)
                         self.profiles[message[0]].add_message(profile_message, self.personalityQueue)
                     else:  # if the profile does not exist, create a profile with this message as the first
-                        if score < self.threshold:
-                            print("\t\t\t" + str(message))
-
                         profile_message = (message[1], score)
                         self.profiles[message[0]] = self.Profile(message[0], profile_message)
                 time.sleep(1)
             except Exception:
                 pass
-
 
     def analyze_personality(self, analyzer):
         """

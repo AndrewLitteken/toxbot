@@ -72,7 +72,7 @@ class ToneAnalyzer:
             temp.append(score_dict[key])
 
         prob = self.clf.predict_proba([temp])[0]
-        print(self.clf.predict_proba([temp])[0])
+        # print(self.clf.predict_proba([temp])[0])
         return -1 * prob[0] + prob[2]
 
 
