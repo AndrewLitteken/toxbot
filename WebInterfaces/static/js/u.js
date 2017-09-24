@@ -25,7 +25,7 @@ function get_user_stats(finished_callback) {
 	QueuedWebRequest("GET", "/user_stats/", "",false, function (text) {
 		var data = JSON.parse(text);
 		if (data["result"] == "success") {
-			update_user_stats(data["users"].slice(0,60));
+			update_user_stats(data["users"].slice(0,100));
 		} else {
 			console.log("ERROR: " + data["message"] + " \nTraceback: " + data["traceback"]);
 		}
