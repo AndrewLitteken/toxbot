@@ -6,6 +6,7 @@ from ToneAnalyzer import ToneAnalyzer
 from PersonalityAnalyzer import PersonalityAnalyzer
 from TranslationModule import TranslationModule
 import time
+import sys
 
 
 class ToxBot:
@@ -140,7 +141,7 @@ class ToxBot:
             profDict[prof.username] = profInfo
         return profDict
 
-    def run(self):
+    def run(self, channel):
         """
         Creates the instantiations of the analyzer classes, creates and starts the threads
         :return: None
@@ -154,7 +155,7 @@ class ToxBot:
 
         toneAnalyzerThread = threading.Thread(target=self.analyze_tone, args=(toneAnalyzer1,))
         jeffyThread = threading.Thread(target=self.jeffy_listen,
-                                       args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g"))
+                                       args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#" + channel)
         personalityThread = threading.Thread(target=self.analyze_personality, args=(personalityAnalyzer1,))
         languageThread = threading.Thread(target=self.analyze_language, args=(languageAnalyzer1,))
 
@@ -198,15 +199,15 @@ class ToxBot:
                 self.messages.put((name, message))
             time.sleep(1)
 
-def main():
+def main(channel):
     """
     creates and runs an instance of ToxBot
     :return: None
     """
     tox_bot = ToxBot()
-    tox_bot.run()
+    tox_bot.run(channel)
     while True:
         pass
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1])
