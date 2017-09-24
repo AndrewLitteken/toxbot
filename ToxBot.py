@@ -149,7 +149,16 @@ class ToxBot:
         toneAnalyzerThread.start()
         personalityThread.start()
 
-
+    def get_user_stats(self):
+        profDict = {}
+        for key in self.profiles:
+            prof = self.profiles[key]
+            toxicity = prof.toxicity
+            if toxicity is None:
+                toxicity = 0
+            profInfo = {"name": prof.username, "toxicity": toxicity, "size": prof.numMessages}
+            profDict[prof.username] = profInfo
+        return profDict
 def main():
     """
     creats and runs an instance of ToxBot
