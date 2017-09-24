@@ -117,8 +117,8 @@ class ToxBot:
         :param channel: the name of the channel on twitch
         :return: None
         """
-        jeffy = IRCbot(usr, auth, irc, channel, self.toBeTranslated)
-        jeffy.listen()
+        self.jeffy = IRCbot(usr, auth, irc, channel, self.toBeTranslated)
+        self.jeffy.listen()
 
     def get_profiles(self):
         """

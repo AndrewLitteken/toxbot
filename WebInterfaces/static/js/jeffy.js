@@ -29,10 +29,28 @@ function num2color(num) {
 function create_badge(num) {
 	var badge = document.createElement("span");
 	badge.setAttribute("class", "badge");
-	badge.appendChild(document.createTextNode(float2goodstring(num)));
+	badge.setAttribute("style", "margin-left: 15px; width: 60px");
+	badge.appendChild(document.createTextNode((100*num).toFixed(2)));
 	badge.style.backgroundColor = num2color(num);
 	badge.style.color = "black";
 	return badge;
+}
+
+function perform_action(action, uname) {
+	QueuedWebRequest("GET","/do/"+action+"/"+uname,"",false,function(text) {
+		var data = JSON.parse(text);
+		if(data["result"]!="success") {
+			console.log("ERROR: "+data["message"]+" \nTraceback: "+data["traceback"]);
+		}
+	});
+}
+function create_button(title, action, user) {
+	var button = document.createElement("button");
+	button.setAttribute("onclick","perform_action(\""+action+"\",\""+user+"\");");
+    button.setAttribute("class", "btn btn-info pull-right btn-sm");
+	button.appendChild(document.createTextNode(title));
+	button.style.color = "black";
+	return button;
 }
 
 function create_comment_list_item(item) {
@@ -54,35 +72,40 @@ function create_comment_list(comments) {
 
 function create_user_info_obj(data, is_panel) {
 	var ret = document.createElement("div");
-	if (is_panel) {
-		ret.setAttribute("class", "panel panel-default");
-	} else {
-		ret.setAttribute("class", "list-group-item");
-	}
-	var name_elem;
-	if (is_panel) {
-		name_elem = document.createElement("div");
-		name_elem.setAttribute("class", "panel-heading");
-	} else {
-		name_elem = document.createElement("h4");
-		name_elem.setAttribute("class", "list-group-item-heading");
-	}
-	name_elem.appendChild(document.createTextNode(data["username"]));
-	name_elem.appendChild(create_badge(data["toxicity"]));
-	ret.appendChild(name_elem);
-	var sub_elem = document.createElement("div");
-	if (is_panel) {
-		sub_elem.setAttribute("class", "panel-body");
-	} else {
-		sub_elem.setAttribute("class", "list-group-item-text");
-	}
-	all_messages = data["worst_messages"];
-	if(!(data["best_messages"]==undefined)) {
-		all_messages = all_messages.concat(data["best_messages"]);
-		all_messages = all_messages.slice(0,data["num_messages"]);
-	}
-	sub_elem.appendChild(create_comment_list(all_messages));
-	ret.appendChild(sub_elem);
+    if(data["username"] != "_") {
+        if (is_panel) {
+            ret.setAttribute("class", "panel panel-default");
+        } else {
+            ret.setAttribute("class", "list-group-item");
+        }
+        var name_elem;
+        if (is_panel) {
+            name_elem = document.createElement("div");
+            name_elem.setAttribute("class", "panel-heading");
+        } else {
+            name_elem = document.createElement("h4");
+            name_elem.setAttribute("class", "list-group-item-heading");
+        }
+        name_elem.appendChild(document.createTextNode(data["username"]));
+        name_elem.appendChild(create_badge(data["toxicity"]));
+        name_elem.appendChild(create_button("Mod", "mod", data["username"]));
+        name_elem.appendChild(create_button("Timeout", "timeout", data["username"]));
+        name_elem.appendChild(create_button("Ban", "ban", data["username"]));
+        ret.appendChild(name_elem);
+        var sub_elem = document.createElement("div");
+        if (is_panel) {
+            sub_elem.setAttribute("class", "panel-body");
+        } else {
+            sub_elem.setAttribute("class", "list-group-item-text");
+        }
+        all_messages = data["worst_messages"];
+        if(!(data["best_messages"]==undefined)) {
+            all_messages = all_messages.concat(data["best_messages"]);
+            all_messages = all_messages.slice(0,data["num_messages"]);
+        }
+        sub_elem.appendChild(create_comment_list(all_messages));
+        ret.appendChild(sub_elem);
+    }
 	return ret;
 }
 
@@ -205,5 +228,4 @@ function autoRefresh() {
 	update_user_info_continuous(3000);
 	get_user_stats_continuous(100);
 }
-
 autoRefresh();
