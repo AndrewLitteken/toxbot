@@ -83,7 +83,10 @@ class ToxBot:
             bad = []
             for item in prof.bad:
                 bad.append(list(item[1]))
-            profInfo = {"username": prof.username, "worst_messages": bad, "toxicity": prof.toxicity}
+            toxicity = prof.toxicity
+            if toxicity is None:
+                toxicity = 0
+            profInfo = {"username": prof.username, "worst_messages": bad, "toxicity": toxicity}
             profDict[prof.username] = profInfo
         return profDict
 
