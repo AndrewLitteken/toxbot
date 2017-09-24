@@ -1,50 +1,5 @@
-Jonathan Baker:
-	2nd floor Hurley
-	End of the hall
-Connor Higgins:
-	Jack walked in I left it with him already
-	Is that okay?
-	He's at the desk and says he will be past 5
-Jonathan Baker:
-	Yup 
-	Sounds good
-	Wait
-	Can you pick me up at main? :P
-Connor Higgins:
-	I'm leaving now, will there still be someone to let me on campus?
-Jonathan Baker:
-	Main circle? 
-	You don't need to get on campus 
-Connor Higgins:
-	I'll try to find my way then, sure
-Jonathan Baker:
-	Hmmmm
-Connor Higgins:
-	I'm near eddy street
-	Shouldn't be too long now
-	I'm here
-Jonathan Baker:
-	Forgot my charger
-	I'm coming 
-Connor Higgins:
-	Okay
-Jonathan Baker:
-	username='a54c1a30-92fe-4c1f-b34a-02936047e396',
-#           password='8WTlVVDHFHCt',
-#           version='2016-05-19')
-Connor Higgins:
-	So I just thought of something. If we are just training it to know if a message is toxic or not based on our neural network, what is the tone analyzer of Watson even doing?
-	I'm going to be leaving soon, you want me to pick you up?
-	Well, if you're awake, you have until I get there to text me, leaving now though
-Jonathan Baker:
-	Oh lol
-	Heading over now 
-Connor Higgins:
-	ttps://github.com/AndrewLitteken/att-hack-2017.git
-Jonathan Baker:
-	from watson_developer_cloud import PersonalityInsightsV3
+from watson_developer_cloud import PersonalityInsightsV3
 import json
-
 
 # Creates personality profile based on previous result if provided
 
