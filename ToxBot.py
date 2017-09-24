@@ -23,7 +23,9 @@ class ToxBot:
             self.username = usr
             self.numMessages = 1
             self.bad = []
+            self.good = []
             heapq.heappush(self.bad, (message[1], message))
+            heapq.heappush(self.good, (-(message[1]), message))
             self.recent = [message]
             self.inQueue = False
             self.toxicity = None
@@ -60,10 +62,10 @@ class ToxBot:
             self.recent.clear()
             self.inQueue = False
             if self.toxicity is None:  # if there have been no prior analyses, toxicity is based on this analysis only
-                self.toxicity = new_tox
+                self.toxicity = new_tox*100
             else:  # if there have been prior analyses, then add this to total analysis as an average
                 scale = num_new_messages / self.numMessages
-                self.toxicity = self.toxicity * scale + new_tox * (1 - scale)
+                self.toxicity = self.toxicity*scale + new_tox*(1-scale)
 
     def analyze_tone(self, analyzer):
         """
@@ -122,12 +124,19 @@ class ToxBot:
         for key in self.profiles:
             prof = self.profiles[key]
             bad = []
+            good = []
             for item in prof.bad:
                 bad.append(list(item[1]))
+            for item in prof.good:
+                good.append(list(item[1]))
             toxicity = prof.toxicity
             if toxicity is None:
                 toxicity = 0
-            profInfo = {"username": prof.username, "worst_messages": bad, "toxicity": toxicity}
+            profInfo = {"username": prof.username,
+                        "worst_messages": bad,
+                        "best_messages": good,
+                        "toxicity": toxicity,
+                        "num_messages": prof.numMessages}
             profDict[prof.username] = profInfo
         return profDict
 
@@ -184,11 +193,9 @@ class ToxBot:
         while True:
             while not self.toBeTranslated.empty():
                 message = self.toBeTranslated.get()
-                try:
-                    message = analyzer.translate_message(message[1])
-                    self.messages.put(message)
-                except Exception:
-                    self.messages.put(message)
+                name = message[0]
+                message = analyzer.translate_message(message[1])
+                self.messages.put((name, message))
             time.sleep(1)
 
 def main():
