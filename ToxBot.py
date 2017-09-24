@@ -6,6 +6,7 @@ from ToneAnalyzer import ToneAnalyzer
 from PersonalityAnalyzer import PersonalityAnalyzer
 from TranslationModule import TranslationModule
 import time
+import sys
 
 
 class ToxBot:
@@ -140,33 +141,30 @@ class ToxBot:
             profDict[prof.username] = profInfo
         return profDict
 
-    def run(self):
+    def run(self, channel):
         """
         Creates the instantiations of the analyzer classes, creates and starts the threads
         :return: None
         """
-        toneAnalyzer1 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19',
+        tone_analyzer = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19',
                                      "./data/all_marked_data.txt", "./data/all_marked_data_scores.txt", False)
-        personalityAnalyzer1 = PersonalityAnalyzer('023391c6-0462-4720-8db4-42d03a32a89a', '6arBBasLMdQQ', '2016-9-20')
-        languageAnalyzer1 = TranslationModule('024d97af-9a06-4990-af90-c5e04421138d', 'ezSrQw1cAwwX')
-        # toneAnalyzer2 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19');
-        # thread.start_new_thread(analyze_tone, (analyzer2, messages));
+        personality_analyzer = PersonalityAnalyzer('023391c6-0462-4720-8db4-42d03a32a89a', '6arBBasLMdQQ', '2016-9-20')
+        language_analyzer = TranslationModule('024d97af-9a06-4990-af90-c5e04421138d', 'ezSrQw1cAwwX')
 
-        toneAnalyzerThread = threading.Thread(target=self.analyze_tone, args=(toneAnalyzer1,))
-        jeffyThread = threading.Thread(target=self.jeffy_listen,
-                                       args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#summit1g"))
-        personalityThread = threading.Thread(target=self.analyze_personality, args=(personalityAnalyzer1,))
-        languageThread = threading.Thread(target=self.analyze_language, args=(languageAnalyzer1,))
+        tone_analyzer_thread = threading.Thread(target=self.analyze_tone, args=(tone_analyzer,))
+        jeffy_thread = threading.Thread(target=self.jeffy_listen, args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#" + str(channel)))
+        personality_thread = threading.Thread(target=self.analyze_personality, args=(personality_analyzer,))
+        language_thread = threading.Thread(target=self.analyze_language, args=(language_analyzer,))
 
-        toneAnalyzerThread.daemon = True
-        jeffyThread.daemon = True
-        personalityThread.daemon = True
-        languageThread.daemon = True
+        tone_analyzer_thread.daemon = True
+        jeffy_thread.daemon = True
+        personality_thread.daemon = True
+        language_thread.daemon = True
 
-        jeffyThread.start()
-        toneAnalyzerThread.start()
-        personalityThread.start()
-        languageThread.start()
+        jeffy_thread.start()
+        tone_analyzer_thread.start()
+        personality_thread.start()
+        language_thread.start()
 
     def get_user_stats(self):
         """
@@ -198,15 +196,15 @@ class ToxBot:
                 self.messages.put((name, message))
             time.sleep(1)
 
-def main():
+def main(channel):
     """
     creates and runs an instance of ToxBot
     :return: None
     """
     tox_bot = ToxBot()
-    tox_bot.run()
+    tox_bot.run(channel)
     while True:
         pass
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1])
