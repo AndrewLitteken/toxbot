@@ -18,7 +18,7 @@ class ToneAnalyzer:
         self.clf = self.train_model()
 
     @staticmethod
-    def __init_analyzer(username: str, password: str, version: str):
+    def __init_analyzer(username, password, version):
         """
         Initialize the analyzer.
         :param username: Watson BlueMIx Api username key
@@ -32,6 +32,11 @@ class ToneAnalyzer:
             version=version)
 
     def _first_init(self):
+        """
+        Processes all of the training data and creates the output text file
+        :return: None
+        """
+
         with open(self._training_files[0]) as f:
             with open('_save_values.txt', 'w') as of:
                 for line in f:
@@ -45,6 +50,10 @@ class ToneAnalyzer:
                     of.write('\n')
 
     def train_model(self):
+        """
+        Uses a neural network to train the model to interpret the results from Watson
+        :return: returns the fitted neural network model
+        """
         x_matrix = []
         with open('_save_values.txt') as f:
             for line in f:
@@ -60,6 +69,11 @@ class ToneAnalyzer:
         return t_clf
 
     def get_score(self, message):
+        """
+        This function takes a messages, runs a tone analysis based on the Watson and trained by a neural network
+        :param message: the message that should be parsed for the tone score
+        :return: returns a tone score from -1 (toxic) to 1 (good/not toxic)
+        """
         data = self.tone_analyzer.tone(text=message)
 
         score_dict = {}

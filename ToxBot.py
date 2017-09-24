@@ -4,11 +4,15 @@ import queue, heapq, threading
 from ircbot import IRCbot
 from ToneAnalyzer import ToneAnalyzer
 from PersonalityAnalyzer import PersonalityAnalyzer
+from TranslationModule import TranslationModule
+from WebInterfaces.JeffyWebInterface import JeffyWebInterface
 import time
+import sys
 
 
 class ToxBot:
     def __init__(self):
+        self.toBeTranslated = queue.Queue()
         self.messages = queue.Queue()
         self.personalityQueue = queue.Queue()
         self.profiles = {}
@@ -21,7 +25,9 @@ class ToxBot:
             self.username = usr
             self.numMessages = 1
             self.bad = []
+            self.good = []
             heapq.heappush(self.bad, (message[1], message))
+            heapq.heappush(self.good, (-1*(message[1]), message))
             self.recent = [message]
             self.inQueue = False
             self.toxicity = None
@@ -35,8 +41,11 @@ class ToxBot:
             """
             self.recent.append(message)
             heapq.heappush(self.bad, (message[1], message))
-            while len(self.bad) > 10:  # only keeps the worst 10 messages
-                del self.bad[10]
+            while len(self.bad) > 3:  # only keeps the worst 3 messages
+                del self.bad[3]
+            heapq.heappush(self.good, (-1*message[1], message))
+            while len(self.good) > 3:  # only keeps the best 3 messages
+                del self.good[3]
             self.numMessages += 1
             if len(self.recent) >= 3 and not self.inQueue:  # run a personality analysis every x messages
                 personalityQueue.put(self)
@@ -49,14 +58,19 @@ class ToxBot:
             :return: None
             """
             num_new_messages = len(self.recent)
-            new_tox = personalityAnalyzer.analyze_personality(self.recent)
+            total = 0
+            for message in self.recent:
+                total += message[1]
+            tone_tox = total/num_new_messages
+            personality_tox = personalityAnalyzer.analyze_personality(self.recent)
+            new_tox = (tone_tox+personality_tox)/2
             self.recent.clear()
             self.inQueue = False
             if self.toxicity is None:  # if there have been no prior analyses, toxicity is based on this analysis only
                 self.toxicity = new_tox
             else:  # if there have been prior analyses, then add this to total analysis as an average
                 scale = num_new_messages / self.numMessages
-                self.toxicity = self.toxicity * scale + new_tox * (1 - scale)
+                self.toxicity = self.toxicity*scale + new_tox*(1-scale)
 
     def analyze_tone(self, analyzer):
         """
@@ -103,7 +117,7 @@ class ToxBot:
         :param channel: the name of the channel on twitch
         :return: None
         """
-        self.jeffy = IRCbot(usr, auth, irc, channel, self.messages)
+        self.jeffy = IRCbot(usr, auth, irc, channel, self.toBeTranslated)
         self.jeffy.listen()
 
     def get_profiles(self):
@@ -115,41 +129,52 @@ class ToxBot:
         for key in self.profiles:
             prof = self.profiles[key]
             bad = []
+            good = []
             for item in prof.bad:
                 bad.append(list(item[1]))
+            for item in prof.good:
+                good.append(list(item[1]))
             toxicity = prof.toxicity
             if toxicity is None:
                 toxicity = 0
-            profInfo = {"username": prof.username, "worst_messages": bad, "toxicity": toxicity}
+            profInfo = {"username": prof.username,
+                        "worst_messages": bad,
+                        "best_messages": good,
+                        "toxicity": toxicity,
+                        "num_messages": prof.numMessages}
             profDict[prof.username] = profInfo
         return profDict
 
-    def run(self):
+    def run(self, channel):
         """
         Creates the instantiations of the analyzer classes, creates and starts the threads
         :return: None
         """
-        toneAnalyzer1 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19',
+        tone_analyzer = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19',
                                      "./data/all_marked_data.txt", "./data/all_marked_data_scores.txt", False)
-        personalityAnalyzer1 = PersonalityAnalyzer('023391c6-0462-4720-8db4-42d03a32a89a', '6arBBasLMdQQ', '2016-9-20')
+        personality_analyzer = PersonalityAnalyzer('023391c6-0462-4720-8db4-42d03a32a89a', '6arBBasLMdQQ', '2016-9-20')
+        language_analyzer = TranslationModule('024d97af-9a06-4990-af90-c5e04421138d', 'ezSrQw1cAwwX')
 
-        # toneAnalyzer2 = ToneAnalyzer('a54c1a30-92fe-4c1f-b34a-02936047e396', '8WTlVVDHFHCt', '2016-05-19');
-        # thread.start_new_thread(analyze_tone, (analyzer2, messages));
+        tone_analyzer_thread = threading.Thread(target=self.analyze_tone, args=(tone_analyzer,))
+        jeffy_thread = threading.Thread(target=self.jeffy_listen, args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#" + str(channel)))
+        personality_thread = threading.Thread(target=self.analyze_personality, args=(personality_analyzer,))
+        language_thread = threading.Thread(target=self.analyze_language, args=(language_analyzer,))
 
-        toneAnalyzerThread = threading.Thread(target=self.analyze_tone, args=(toneAnalyzer1,))
-        jeffyThread = threading.Thread(target=self.jeffy_listen,
-                                       args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#johnathonnow"))
-        personalityThread = threading.Thread(target=self.analyze_personality, args=(personalityAnalyzer1,))
+        tone_analyzer_thread.daemon = True
+        jeffy_thread.daemon = True
+        personality_thread.daemon = True
+        language_thread.daemon = True
 
-        toneAnalyzerThread.daemon = True
-        jeffyThread.daemon = True
-        personalityThread.daemon = True
-
-        jeffyThread.start()
-        toneAnalyzerThread.start()
-        personalityThread.start()
+        jeffy_thread.start()
+        tone_analyzer_thread.start()
+        personality_thread.start()
+        language_thread.start()
 
     def get_user_stats(self):
+        """
+        Web interface that returns stats on a user's toxicity and total number of messages
+        :return: dictionary of stats on a user's toxicity and total number of messages
+        """
         profDict = {}
         for key in self.profiles:
             prof = self.profiles[key]
@@ -159,16 +184,34 @@ class ToxBot:
             profInfo = {"name": prof.username, "toxicity": toxicity, "size": prof.numMessages}
             profDict[prof.username] = profInfo
         return profDict
-def main():
+
+    def analyze_language(self, analyzer):
+        """
+        takes in a message, determines the language that it is in, and translates it if necessary
+        :param analyzer: instantiation of the language analyzer class, used to analyze the language and translate to
+                            english if possible
+        :return: None
+        """
+        while True:
+            while not self.toBeTranslated.empty():
+                message = self.toBeTranslated.get()
+                name = message[0]
+                message = analyzer.translate_message(message[1])
+                self.messages.put((name, message))
+            time.sleep(1)
+
+def main(channel):
     """
-    creats and runs an instance of ToxBot
+    creates and runs an instance of ToxBot
     :return: None
     """
     tox_bot = ToxBot()
-    tox_bot.run()
-    while True:
-        pass
-
+    intrfce = JeffyWebInterface(80,tox_bot)
+    intrfce.startRESTinterface()
+    tox_bot.run(channel)
+    
+    input()
+    intrfce.stopRESTinterface()
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1])

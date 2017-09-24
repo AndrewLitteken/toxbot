@@ -15,6 +15,7 @@ class JeffyWebInterface(WebInterface):
 		self.host = WebHost(self.port,staticdir="WebInterfaces/static",staticindex="jeffy.html")
 		self.tox_bot = tox_bot
 		
+		self.connect('/user_stats/',		'USER_STATS',	'GET')
 		self.connect('/all_users/',			'ALL_USERS',	'GET')
 		self.connect('/do/mod/:uname',    'ACTION_MOD',	'GET')
 		self.connect('/do/ban/:uname',    'ACTION_BAN',	'GET')
@@ -25,19 +26,17 @@ class JeffyWebInterface(WebInterface):
 	
 	def getAllUsersDict(self):
 		return self.tox_bot.get_profiles()
-		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["",1],["",1]],"toxicity":1},"uname":{"username":"uname","worst_messages":[["",1],["",1]],"toxicity":0.9}}
-		# return {"ZahmbieND":{"username":"ZahmbieND","worst_messages":[["Hi",1],["Bye",0.999]],"toxicity":1},
-		# 	"uname":self.getRandomFakeData("uname"),
-		# 	"john effrey":self.getRandomFakeData("john effrey"),
-		# 	"chiggin":self.getRandomFakeData("chiggin"),
-		# 	"jbaker":self.getRandomFakeData("jbaker"),
-		# }
+	
+	def getUserStatsDict(self):
+		return self.tox_bot.get_user_stats()
 
 	def getNeutralFakeData(self,username):
 		return {
 			"username":username,
 			"worst_messages":[],
-			"toxicity":0
+			"best_messages":[],
+			"toxicity":0,
+			"num_messages":0,
 		}
 
 	def getRandomFakeData(self,username):
@@ -48,6 +47,11 @@ class JeffyWebInterface(WebInterface):
 		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
 		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
 		fake_data["worst_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
+		fake_data["best_messages"].append(["Message Text",random.random()*2-1])
 		return fake_data
 
 	def getAllUsersList(self):
@@ -56,9 +60,33 @@ class JeffyWebInterface(WebInterface):
 		for key in user_dict:
 			user_list.append(user_dict[key])
 		return user_list
+	
+	def getUserStatsList(self):
+		user_dict = self.getUserStatsDict()
+		user_list = []
+		for key in user_dict:
+			user_list.append(user_dict[key])
+		return user_list
 
 	def getSortedUsers(self):
 		return sorted(self.getAllUsersList(), key=lambda k: k["toxicity"])
+
+	def getSortedUserStats(self):
+		name_sort = sorted(self.getUserStatsList(), key=lambda k: k["name"])
+		rev = sorted(name_sort, key=lambda k: k["size"])
+		rev.reverse()
+		return rev
+
+	def USER_STATS(self):
+		"""return stats on all users"""
+		output = {'result':'success'}
+		try:
+			output["users"] = self.getSortedUserStats()
+		except Exception as ex:
+			output['result'] = 'error'
+			output['message'] = str(ex)
+			output['traceback'] = traceback.format_exc()
+		return json.dumps(output)
 
 	def ALL_USERS(self):
 		"""return stats on all users"""
