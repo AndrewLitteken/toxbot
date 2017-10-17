@@ -150,10 +150,10 @@ class ToxBot:
         Creates the instantiations of the analyzer classes, creates and starts the threads
         :return: None
         """
-        tone_analyzer = ToneAnalyzer('api-identifier', 'api-password', 'api-version',
+        tone_analyzer = ToneAnalyzer('15995331-bf1f-4ca7-9a79-4b1ae9c5d544', 'hnioI4YAvFbn', '2016-05-19',
                                      "./data/all_marked_data.txt", "./data/all_marked_data_scores.txt", False)
-        personality_analyzer = PersonalityAnalyzer('api-identifier', 'api-password', 'api-version')
-        language_analyzer = TranslationModule('api-identifier', 'api-password')
+        personality_analyzer = PersonalityAnalyzer('d68b1f5b-c43d-4b0d-a644-775e1071194e', 'fJMpsSvXYBIF', '2016-9-20')
+        language_analyzer = TranslationModule('15995331-bf1f-4ca7-9a79-4b1ae9c5d544', 'hnioI4YAvFbn')
 
         tone_analyzer_thread = threading.Thread(target=self.analyze_tone, args=(tone_analyzer,))
         jeffy_thread = threading.Thread(target=self.jeffy_listen, args=("johnathonnow", "oauth:mm84kpr5or9rmashwlp9f8dxprqm3b", "irc.chat.twitch.tv", "#" + str(channel)))
